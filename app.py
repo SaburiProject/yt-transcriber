@@ -18,9 +18,13 @@ def transcribe():
         # Step 1: Download audio using yt-dlp
         filename = "audio.wav"
         subprocess.run([
-            "yt-dlp", "-x", "--audio-format", "wav",
-            "-o", "audio.%(ext)s", youtube_url
-        ], check=True)
+    "yt-dlp",
+    "--user-agent", "Mozilla/5.0",
+    "-x", "--audio-format", "wav",
+    "-o", "audio.%(ext)s",
+    youtube_url
+], check=True)
+
 
         # Step 2: Read audio
         with open(filename, "rb") as f:
