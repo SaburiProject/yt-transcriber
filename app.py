@@ -6,7 +6,7 @@ import requests
 
 app = Flask(__name__)
 
-HUGGINGFACE_API_KEY = "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"
+HUGGINGFACE_API_KEY = hftoken
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
