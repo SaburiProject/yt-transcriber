@@ -1,22 +1,26 @@
-# Use official lightweight Python image
-FROM python:3.11-slim
+FROM python:3.10.12-slim-bullseye
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y ffmpeg curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install ffmpeg
-RUN apt-get update && apt-get install -y ffmpeg && apt-get clean
+# Copy app code
+COPY main.py .
 
-# Copy app files
-COPY app.py .
-
-# Expose the port Cloud Run will use
-ENV PORT 8080
+# Expose port
 EXPOSE 8080
 
-# Run the app
-CMD ["python", "app.py"]
+# ✅ Command to run the application with 1000s timeout
+CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8080", "--timeout", "1000"]
